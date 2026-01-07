@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tic Tac Toe</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="bg-light text-center">
+
+<div class="container py-5 d-flex flex-column align-items-center">
+    <h1 class="mb-4">Tic Tac Toe</h1>
+
+    <!-- Player Names -->
+    <div class="row mb-4 justify-content-center">
+        <div class="col-5">
+            <input type="text" id="playerX" class="form-control" placeholder="Player X Name">
+        </div>
+        <div class="col-5">
+            <input type="text" id="playerO" class="form-control" placeholder="Player O Name">
+        </div>
+    </div>
+
+    <!-- Current Turn -->
+    <h4 id="turnIndicator" class="mb-3">Current Turn: X</h4>
+
+    <!-- Board -->
+    <div id="board">
+        <div class="cell btn btn-outline-primary fs-1" data-index="0"></div>
+        <div class="cell btn btn-outline-primary fs-1" data-index="1"></div>
+        <div class="cell btn btn-outline-primary fs-1" data-index="2"></div>
+        <div class="cell btn btn-outline-primary fs-1" data-index="3"></div>
+        <div class="cell btn btn-outline-primary fs-1" data-index="4"></div>
+        <div class="cell btn btn-outline-primary fs-1" data-index="5"></div>
+        <div class="cell btn btn-outline-primary fs-1" data-index="6"></div>
+        <div class="cell btn btn-outline-primary fs-1" data-index="7"></div>
+        <div class="cell btn btn-outline-primary fs-1" data-index="8"></div>
+    </div>
+
+    <!-- Scoreboard -->
+    <div class="mt-4">
+        <h5>Scoreboard</h5>
+        <p id="scoreBoard">X: 0 | O: 0</p>
+    </div>
+
+    <!-- 🏆 Match History -->
+    <div class="mt-5 w-100">
+        <h4>🏆 Match History</h4>
+        <table class="table table-striped table-bordered mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>Player X</th>
+                    <th>Player O</th>
+                    <th>Winner</th>
+                    <th>Played At</th>
+                </tr>
+            </thead>
+            <tbody id="historyTable"></tbody>
+        </table>
+    </div>
+
+    <!-- Reset -->
+    <button id="reset" class="btn btn-danger mt-3">Reset Game</button>
+</div>
+
+<!-- Game Logic -->
+<script src="{{ url_for('static', filename='js/tictactoe.js') }}"></script>
+
+</body>
+</html>

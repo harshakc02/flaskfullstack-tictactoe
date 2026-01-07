@@ -1,0 +1,92 @@
+body {
+    font-family: "Poppins", Arial, sans-serif;
+}
+
+/* Title */
+h1 {
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* Board */
+#board {
+    display: grid;
+    grid-template-columns: repeat(3, 120px);
+    gap: 15px;
+    justify-content: center;
+    margin: 30px auto;
+}
+
+/* Cell */
+.cell {
+    height: 120px;
+    width: 120px;
+    border-radius: 15px;
+    font-size: 3rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hover */
+.cell:hover {
+    transform: scale(1.08);
+}
+
+/* X and O styling */
+.cell.btn-primary {
+    background-color: #4f8cff !important;
+    color: white;
+}
+
+.cell.btn-warning {
+    background-color: #6fcf97 !important;
+    color: #1b4332;
+}
+
+/* Disabled cells */
+.cell.disabled {
+    pointer-events: none;
+}
+
+/* Winner animation */
+.win-cell {
+    background-color: #ffd166 !important;
+    color: #000 !important;
+    animation: pulse 0.6s infinite alternate;
+}
+
+@keyframes pulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.08); }
+}
+
+/* Scoreboard */
+#scoreBoard {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* Reset button */
+#reset {
+    padding: 10px 25px;
+    font-size: 1rem;
+    border-radius: 25px;
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+    #board {
+        grid-template-columns: repeat(3, 90px);
+        gap: 10px;
+    }
+
+    .cell {
+        height: 90px;
+        width: 90px;
+        font-size: 2.2rem;
+    }
+}
