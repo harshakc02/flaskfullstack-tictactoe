@@ -1,26 +1,28 @@
-# 1️⃣ Base image
 FROM python:3.11-slim
 
-# 2️⃣ Set working directory
-WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# 3️⃣ Install system dependencies (optional but safe)
-RUN apt-get update && apt-get install -y \
-    gcc \
-    default-libmysqlclient-dev \
+# Install system dependencies (add/remove as needed for DB drivers)
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       build-essential \
+       default-libmysqlclient-dev \
+       gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# 4️⃣ Copy requirements first (layer caching)
-COPY requirements.txt .
+WORKDIR /app
 
-# 5️⃣ Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies first for better caching
+COPY requirements.txt ./
+RUN pip install --upgrade pip \
+    && pip install -r requirements.txt
 
-# 6️⃣ Copy application code
+# Copy app source
 COPY . .
 
-# 7️⃣ Expose Flask port
+# Listen on port 8000 (gunicorn default below)
 EXPOSE 8000
 
-# 8️⃣ Run app with Gunicorn (IMPORTANT)
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "wsgi:app"]
+# Use gunicorn to serve the Flask app via the wsgi entrypoint
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "wsgi:app"]
