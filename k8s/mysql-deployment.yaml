@@ -42,10 +42,16 @@ spec:
           volumeMounts:
             - name: mysql-storage
               mountPath: /var/lib/mysql
+          readinessProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 10
+            periodSeconds: 5
       volumes:
         - name: mysql-storage
           persistentVolumeClaim:
             claimName: mysql-pvc
+
 ---
 apiVersion: v1
 kind: Service
@@ -58,4 +64,3 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-  clusterIP: None

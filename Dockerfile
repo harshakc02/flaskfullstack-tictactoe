@@ -1,28 +1,33 @@
 FROM python:3.11-slim
 
+# Environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Install system dependencies (add/remove as needed for DB drivers)
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-       build-essential \
-       default-libmysqlclient-dev \
-       gcc \
+# System dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    default-libmysqlclient-dev \
+    gcc \
     && rm -rf /var/lib/apt/lists/*
 
+# Set workdir
 WORKDIR /app
 
-# Install Python dependencies first for better caching
-COPY requirements.txt ./
+# Install Python dependencies
+COPY requirements.txt .
 RUN pip install --upgrade pip \
-    && pip install -r requirements.txt
+    && pip install --no-cache-dir -r requirements.txt
 
-# Copy app source
+# Copy application code
 COPY . .
 
-# Listen on port 8000 (gunicorn default below)
+# Create non-root user (security)
+RUN addgroup --system appgroup && adduser --system --group appuser
+USER appuser
+
+# Expose app port
 EXPOSE 8000
 
-# Use gunicorn to serve the Flask app via the wsgi entrypoint
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "wsgi:app"]
+# Run using gunicorn
+CMD ["gunicorn", "--workers", "3", "--timeout", "120", "--bind", "0.0.0.0:8000", "wsgi:app"]
