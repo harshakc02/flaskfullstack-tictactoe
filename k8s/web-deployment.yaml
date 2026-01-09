@@ -13,10 +13,22 @@ spec:
       labels:
         app: tic-tac-toe-web
     spec:
+      initContainers:
+        - name: wait-for-mysql
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for MySQL..."
+              while ! nc -z mysql 3306; do
+                sleep 2
+              done
+              echo "MySQL is up!"
       containers:
         - name: web
-          image: tic_tac_toe_web:latest
-          imagePullPolicy: IfNotPresent
+          image: harshakc0205/tic-tac-toe:v3   # use v3 fixed image
+          imagePullPolicy: Always
           ports:
             - containerPort: 8000
           env:
@@ -41,8 +53,16 @@ spec:
             httpGet:
               path: /
               port: 8000
-            initialDelaySeconds: 5
+            initialDelaySeconds: 25   # give enough time for MySQL + app to start
             periodSeconds: 5
+            failureThreshold: 6
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
 
 ---
 apiVersion: v1

@@ -1,33 +1,23 @@
+ubuntu@ip-172-31-23-109:~/flaskfullstack-tictactoe$ cat Dockerfile
 FROM python:3.11-slim
-
-# Environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# System dependencies
+WORKDIR /app
+# System deps (NO mysql client needed)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     default-libmysqlclient-dev \
     gcc \
+    netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
-# Set workdir
-WORKDIR /app
-
-# Install Python dependencies
 COPY requirements.txt .
-RUN pip install --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
 COPY . .
 
-# Create non-root user (security)
+RUN chmod +x wait-for-it.sh
+
 RUN addgroup --system appgroup && adduser --system --group appuser
 USER appuser
 
-# Expose app port
 EXPOSE 8000
-
-# Run using gunicorn
-CMD ["gunicorn", "--workers", "3", "--timeout", "120", "--bind", "0.0.0.0:8000", "wsgi:app"]
+ENTRYPOINT ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "wsgi:app"]
